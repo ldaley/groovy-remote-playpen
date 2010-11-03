@@ -1,0 +1,29 @@
+apply plugin: "groovy"
+
+// Change this to point to your groovy checkout
+groovyCheckout = '/Users/ld/Projects/groovy'
+groovyVersion = "1.8.0-beta-3-SNAPSHOT"
+
+// Remote control checkout -- uncomment out to use, otherwise 0.1 will be used from central
+/*remoteCheckout = '/Users/ld/Projects/groovy-remote'
+remoteVersion = "0.2-SNAPSHOT"
+*/
+if (!hasProperty('remoteCheckout')) {
+	remoteVersion = "0.1"
+}
+
+repositories {
+	mavenCentral()
+	flatDir name: 'groovy', dirs: groovyCheckout + "/target/dist"
+	if (project.hasProperty('remoteCheckout')) {
+		flatDir name: 'remote-core', dirs: remoteCheckout + "/module/remote-core/build/libs"
+		flatDir name: 'remote-transport-local', dirs: remoteCheckout + "/module/remote-transport-local/build/libs"
+	}
+}
+
+dependencies {
+	groovy ":groovy-all:$groovyVersion"
+	compile "org.codehaus.groovy.modules.remote:remote-core:$remoteVersion"
+	compile "org.codehaus.groovy.modules.remote:remote-transport-local:$remoteVersion"
+	compile 'junit:junit:4.8.2'
+}
